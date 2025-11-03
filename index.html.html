@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>WhatsApp Link Generator</title>
+
+  <!-- ✅ WhatsApp favicon -->
+  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" type="image/svg+xml">
+
+  <style>
+    *{box-sizing:border-box}
+    body{
+      font-family:'Poppins',sans-serif;
+      background:linear-gradient(135deg,#25d366,#128c7e);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      min-height:100vh;
+      margin:0;
+      padding:20px;
+    }
+    .container{
+      background:#fff;
+      padding:30px;
+      border-radius:20px;
+      box-shadow:0 6px 20px rgba(0,0,0,0.2);
+      max-width:420px;
+      width:100%;
+      text-align:center;
+      animation: fadeIn 0.8s ease;
+    }
+    @keyframes fadeIn{
+      from{opacity:0;transform:translateY(30px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+    h2{
+      color:#128c7e;
+      margin-bottom:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+    }
+    h2 img{
+      width:28px;
+      height:28px;
+    }
+    p{
+      color:#555;
+      font-size:14px;
+      margin-bottom:20px;
+    }
+    input,textarea,select,button{
+      width:100%;
+      padding:10px;
+      margin:8px 0;
+      border-radius:10px;
+      border:1px solid #ccc;
+      font-size:15px;
+      outline:none;
+      transition:all .3s ease;
+    }
+    input:focus,textarea:focus,select:focus{
+      border-color:#25d366;
+      box-shadow:0 0 5px #25d36666;
+    }
+    button{
+      background:#25d366;
+      border:none;
+      color:#fff;
+      font-weight:bold;
+      cursor:pointer;
+      transition:background .3s, transform .2s;
+    }
+    button:hover{
+      background:#1ebe5d;
+      transform:scale(1.05);
+    }
+    .result{
+      background:#f7f7f7;
+      border-radius:10px;
+      padding:10px;
+      margin-top:15px;
+      word-break:break-all;
+    }
+    a{
+      color:#128c7e;
+      text-decoration:none;
+      font-weight:bold;
+    }
+    a:hover{text-decoration:underline}
+    footer{
+      margin-top:20px;
+      font-size:12px;
+      color:#fff;
+      text-align:center;
+      line-height:1.6;
+    }
+    .about{
+      margin-top:30px;
+      text-align:center;
+      color:#fff;
+      font-size:14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp icon">
+      WhatsApp Link Generator
+    </h2>
+    <p>Enter phone number & optional message to create a shareable WhatsApp link.</p>
+
+    <label>Country Code:</label>
+    <select id="cc">
+      <option value="91" selected>+91 India</option>
+      <option value="1">+1 USA</option>
+      <option value="44">+44 UK</option>
+      <option value="61">+61 Australia</option>
+    </select>
+
+    <label>Phone Number:</label>
+    <input id="phone" placeholder="e.g. 0000000000" inputmode="numeric">
+
+    <label>Message (optional):</label>
+    <textarea id="msg" rows="3" placeholder="Type your message..."></textarea>
+
+    <button id="generate">Generate Link</button>
+
+    <div id="result" class="result"></div>
+  </div>
+
+  <div class="about">
+    <p><strong>About:</strong> Created by <b>Ashish Kushwaha</b> — AI & Automation Enthusiast 💻</p>
+    <p>Version: <b>v1.0 — November 2025</b></p>
+  </div>
+  <footer>
+    Made with 💚 by <b>Ashish Kushwaha</b>
+  </footer>
+
+  <script>
+    const generate = document.getElementById('generate');
+    const phoneInput = document.getElementById('phone');
+    const result = document.getElementById('result');
+
+    function setResult(html){ result.innerHTML = html; }
+
+    generate.addEventListener('click', ()=>{
+      const cc = document.getElementById('cc').value.trim();
+      const phone = phoneInput.value.replace(/\D+/g,'');
+      const msg = document.getElementById('msg').value.trim();
+
+      if(!phone){
+        setResult("❌ Pehle number dalo.");
+        return;
+      }
+
+      const fullNumber = cc + phone;
+      const encodedMsg = encodeURIComponent(msg);
+      const link = `https://api.whatsapp.com/send?phone=${fullNumber}&text=${encodedMsg}`;
+
+      setResult(`
+        ✅ <b>Generated Link:</b><br>
+        <a href="${link}" target="_blank">${link}</a><br><br>
+        <button onclick="navigator.clipboard.writeText('${link}')">📋 Copy Link</button>
+        <small><br>Click to open in WhatsApp or copy above link.</small>
+      `);
+
+      window.open(link, '_blank');
+    });
+
+    phoneInput.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter') generate.click();
+    });
+
+    setResult('https://api.whatsapp.com/send?phone=910000000000&text=Hello');
+  </script>
+</body>
+</html>
